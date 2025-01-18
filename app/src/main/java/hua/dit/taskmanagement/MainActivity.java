@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import hua.dit.taskmanagement.fragments.CreateTaskFragment;

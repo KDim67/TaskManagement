@@ -28,8 +28,9 @@ public class Task {
     @ColumnInfo(name = "status")
     private String status;
 
-    public Task(String shortName, String description, Date startTime,
-                      Integer durationHours, String location) {
+    public Task() {}
+
+    public Task(String shortName, String description, Date startTime, Integer durationHours, String location) {
         this.shortName = shortName;
         this.description = description;
         this.startTime = startTime;
@@ -79,7 +80,7 @@ public class Task {
     }
 
     public String getLocation() {
-        return location;
+        return location != null ? location : "";
     }
 
     public void setLocation(String location) {

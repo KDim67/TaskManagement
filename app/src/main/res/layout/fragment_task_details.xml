@@ -10,86 +10,70 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_view_detail_title"
+            android:id="@+id/task_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/short_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"/>
 
         <TextView
+            android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Description:"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/text_view_detail_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:layout_marginBottom="16dp"/>
 
         <TextView
+            android:id="@+id/start_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Time:"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:id="@+id/text_view_detail_start_time"
+            android:id="@+id/duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
+            android:id="@+id/location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Duration:"
-            android:textStyle="bold"/>
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:id="@+id/text_view_detail_duration"
+            android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Location:"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/text_view_detail_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Status:"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/text_view_detail_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_marginBottom="24dp"/>
 
         <Button
-            android:id="@+id/button_complete"
+            android:id="@+id/complete_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mark as Completed"
             android:layout_marginBottom="8dp"/>
 
         <Button
-            android:id="@+id/button_view_map"
+            android:id="@+id/view_map_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Location on Map"/>
+            android:text="View Location on Map"
+            android:visibility="gone"/>
 
     </LinearLayout>
-
 </ScrollView>

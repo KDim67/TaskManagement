@@ -76,6 +76,25 @@ public class TaskRepository {
         });
     }
 
+    public void getNonCompletedTasksOrdered(final DataCallback<List<Task>> callback) {
+        executorService.execute(() -> {
+            try {
+                List<Task> tasks = taskDao.getNonCompletedTasksOrdered();
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (callback != null) {
+                        callback.onDataLoaded(tasks);
+                    }
+                });
+            } catch (Exception e) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    if (callback != null) {
+                        callback.onError(e.getMessage());
+                    }
+                });
+            }
+        });
+    }
+
     public void updateTaskStatus(final int taskId, final String newStatus, final OperationCallback callback) {
         executorService.execute(new Runnable() {
             @Override

@@ -27,4 +27,13 @@ public interface TaskDao {
 
     @Query("UPDATE tasks SET status = :newStatus WHERE uid = :taskId")
     public int updateTaskStatus(int taskId, String newStatus);
+
+    @Query("SELECT * FROM tasks WHERE status != 'completed' ORDER BY " +
+            "CASE status " +
+            "WHEN 'expired' THEN 1 " +
+            "WHEN 'in-progress' THEN 2 " +
+            "WHEN 'recorded' THEN 3 " +
+            "ELSE 4 END, " +
+            "start_time ASC")
+    List<Task> getNonCompletedTasksOrdered();
 }
