@@ -2,4 +2,9 @@
 <resources>
     <item type="id" name="nav_tasks"/>
     <item type="id" name="nav_create"/>
+    <item type="id" name="update_button"/>
+    <item type="id" name="delete_button"/>
+    <item type="id" name="query_by_id_button"/>
+    <item type="id" name="insert_button"/>
+    <item type="id" name="query_button"/>
 </resources>

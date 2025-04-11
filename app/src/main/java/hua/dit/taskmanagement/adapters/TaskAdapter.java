@@ -13,12 +13,17 @@ import java.util.Locale;
 import hua.dit.taskmanagement.R;
 import hua.dit.taskmanagement.entities.Task;
 
+// Adapter class for handling the display of Task items in a RecyclerView
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
+    // List to store task items
     private List<Task> tasks = new ArrayList<>();
+    // Interface instances for handling click events
     private OnTaskClickListener clickListener;
     private OnTaskLongClickListener longClickListener;
+    // Date formatter for consistent date display
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
+    // Creates new ViewHolder instances for the RecyclerView
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -27,16 +32,27 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         return new TaskViewHolder(itemView);
     }
 
+    // Binds data to the ViewHolder for display
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task currentTask = tasks.get(position);
         holder.idTextView.setText(String.format("ID: %d", currentTask.getUid()));
         holder.titleTextView.setText(currentTask.getShortName());
-        holder.timeTextView.setText(dateFormat.format(currentTask.getStartTime()));
-        holder.statusTextView.setText(String.format("Status: %s", currentTask.getStatus()));
 
+        // Handle date display with null check
+        if (currentTask.getStartTime() != null) {
+            holder.timeTextView.setText(dateFormat.format(currentTask.getStartTime()));
+        } else {
+            holder.timeTextView.setText("No date set");
+        }
+
+        // Set status text with null check
+        String status = currentTask.getStatus() != null ? currentTask.getStatus() : "N/A";
+        holder.statusTextView.setText(String.format("Status: %s", status));
+
+        // Set text color based on task status
         int textColor;
-        switch (currentTask.getStatus()) {
+        switch (status) {
             case "expired":
                 textColor = holder.itemView.getContext().getResources().getColor(android.R.color.holo_red_dark);
                 break;
@@ -50,6 +66,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.statusTextView.setTextColor(textColor);
     }
 
+    // Returns the total number of items in the adapter
     @Override
     public int getItemCount() {
         return tasks.size();
@@ -68,12 +85,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         this.longClickListener = listener;
     }
 
+    // ViewHolder class for caching view references
     class TaskViewHolder extends RecyclerView.ViewHolder {
+        // View elements for displaying task information
         private TextView idTextView;
         private TextView titleTextView;
         private TextView timeTextView;
         private TextView statusTextView;
 
+        // Initialize ViewHolder and set up click listeners
         public TaskViewHolder(View itemView) {
             super(itemView);
             idTextView = itemView.findViewById(R.id.text_view_id);
@@ -81,6 +101,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             timeTextView = itemView.findViewById(R.id.text_view_time);
             statusTextView = itemView.findViewById(R.id.text_view_status);
 
+            // Set up click listener for normal clicks
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (clickListener != null && position != RecyclerView.NO_POSITION) {
@@ -88,6 +109,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
                 }
             });
 
+            // Set up click listener for long clicks
             itemView.setOnLongClickListener(v -> {
                 int position = getAdapterPosition();
                 if (longClickListener != null && position != RecyclerView.NO_POSITION) {
@@ -99,10 +121,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
+    // Interface for handling normal click events
     public interface OnTaskClickListener {
         void onTaskClick(Task task);
     }
 
+    // Interface for handling long click events
     public interface OnTaskLongClickListener {
         void onTaskLongClick(Task task);
     }

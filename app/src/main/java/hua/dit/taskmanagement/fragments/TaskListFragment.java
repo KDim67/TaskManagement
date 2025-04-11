@@ -18,33 +18,46 @@ import hua.dit.taskmanagement.R;
 import hua.dit.taskmanagement.adapters.TaskAdapter;
 import hua.dit.taskmanagement.entities.Task;
 import hua.dit.taskmanagement.repositories.TaskRepository;
+import hua.dit.taskmanagement.repositories.TaskRepositoryManager;
 import hua.dit.taskmanagement.utils.TaskExporter;
 
+// Fragment for displaying a list of tasks and handling task-related operations
 public class TaskListFragment extends Fragment {
+    // Tag for logging purposes
     private static final String TAG = "TaskListFragment";
+
+    // Adapter for the RecyclerView
     private TaskAdapter adapter;
+
+    // Repository for database operations
     private TaskRepository taskRepository;
 
+    // Initialize fragment and repository
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        taskRepository = new TaskRepository(requireContext());
+        taskRepository = TaskRepositoryManager.getInstance(requireActivity().getApplication()).getTaskRepository();
     }
 
+    // Create and set up the fragment's view
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
+        // Set up RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
 
+        // Set up export FAB
         FloatingActionButton exportFab = view.findViewById(R.id.export_fab);
         exportFab.setOnClickListener(v -> exportTasks());
 
+        // Initialize and set up adapter
         adapter = new TaskAdapter();
         recyclerView.setAdapter(adapter);
 
+        // Set up click listener for viewing task details
         adapter.setOnTaskClickListener(task -> {
             TaskDetailsFragment detailsFragment = TaskDetailsFragment.newInstance(task.getUid());
             requireActivity().getSupportFragmentManager()
@@ -54,12 +67,15 @@ public class TaskListFragment extends Fragment {
                     .commit();
         });
 
+        // Set up long click listener for delete operation
         adapter.setOnTaskLongClickListener(this::showDeleteDialog);
 
+        // Load initial task data
         loadTasks();
         return view;
     }
 
+    // Loads non-completed tasks from repository and updates the adapter
     private void loadTasks() {
         if (isAdded() && getContext() != null) {
             taskRepository.getNonCompletedTasksOrdered(new TaskRepository.DataCallback<List<Task>>() {
@@ -82,17 +98,19 @@ public class TaskListFragment extends Fragment {
         }
     }
 
+    // Shows confirmation dialog before deleting a task
     private void showDeleteDialog(Task task) {
         if (isAdded() && getContext() != null) {
             new AlertDialog.Builder(requireContext())
                     .setTitle("Delete Task")
-                    .setMessage("Are you sure you want to delete task: " + task.getShortName() + "?")
+                    .setMessage("Are you sure you want to delete task with name: " + task.getShortName() + " and id: " + task.getUid() + "?")
                     .setPositiveButton("Delete", (dialog, which) -> deleteTask(task.getUid()))
                     .setNegativeButton("Cancel", null)
                     .show();
         }
     }
 
+    // Deletes a task from the repository
     private void deleteTask(int taskId) {
         taskRepository.deleteTask(taskId, new TaskRepository.OperationCallback() {
             @Override
@@ -113,6 +131,7 @@ public class TaskListFragment extends Fragment {
         });
     }
 
+    // Shows a generic result dialog with title and message
     private void showResultDialog(String title, String message) {
         if (isAdded() && getContext() != null) {
             new AlertDialog.Builder(requireContext())
@@ -123,6 +142,7 @@ public class TaskListFragment extends Fragment {
         }
     }
 
+    // Exports non-completed tasks to HTML file
     private void exportTasks() {
         Log.d(TAG, "exportTasks called");
         taskRepository.getNonCompletedTasks(new TaskRepository.DataCallback<List<Task>>() {
@@ -130,13 +150,16 @@ public class TaskListFragment extends Fragment {
             public void onDataLoaded(List<Task> tasks) {
                 Log.d(TAG, "Tasks loaded, count: " + (tasks != null ? tasks.size() : 0));
                 try {
+                    // Export tasks to HTML file
                     File htmlFile = TaskExporter.exportTasksToHtml(requireContext(), tasks);
 
+                    // Show success message
                     String message = String.format("Tasks exported to Downloads:\n%s",
                             htmlFile.getName());
                     Log.d(TAG, "Export successful: " + message);
                     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
+                    // Handle export failure
                     Log.e(TAG, "Export failed", e);
                     Toast.makeText(requireContext(),
                             "Failed to export tasks: " + e.getMessage(),
